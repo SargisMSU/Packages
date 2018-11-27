@@ -43,12 +43,6 @@ public class MainActivity extends AppCompatActivity {
 
         appManager = new AppManager(this);
 
-
-        /*for (int i = 0; i < appInfoList.size(); i++) {
-            Log.i(TAG, appInfoList.get(i).toString());
-
-        }*/
-
         appsAdapter = new AppsAdapter();
 
         LinearLayoutManager linearLayoutManager = new LinearLayoutManager(this);
@@ -178,7 +172,23 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void uninstallWithRoot(AppInfo appInfo){
-        UninstallAsyncTask asyncTask = new UninstallAsyncTask();
-        asyncTask.execute(appInfo.getPackageName());
+        UninstallAsyncTask asyncTask = new UninstallAsyncTask(uninstallListener);
+        asyncTask.execute(appInfo);
     }
+
+    private final UninstallAsyncTask.UninstallListener uninstallListener = new
+                    UninstallAsyncTask.UninstallListener(){
+
+                        @Override
+                        public void onUninstall() {
+                            Toast.makeText(MainActivity.this, "Удалено!", Toast.LENGTH_LONG).show();
+                            reloadApps();
+                        }
+
+                        @Override
+                        public void onFailed() {
+                            Toast.makeText(MainActivity.this, "Не удалось удалить!", Toast.LENGTH_LONG).show();
+                            reloadApps();
+                        }
+                    };
 }
